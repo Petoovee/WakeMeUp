@@ -1,0 +1,9 @@
+﻿<Defs>
+    <ThingDef>
+        <comps>
+            <li>
+                <compClass>WakeMeUp.WakeMeUp</compClass>
+            </li>
+        </comps>
+    </ThingDef>
+</Defs>
