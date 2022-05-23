@@ -1,7 +1,9 @@
-﻿<Defs>
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
     <ThingDef>
+		<defName>WakeMeUp</defName>
         <comps>
-            <li>
+			<li>
                 <compClass>WakeMeUp.WakeMeUp</compClass>
             </li>
         </comps>
