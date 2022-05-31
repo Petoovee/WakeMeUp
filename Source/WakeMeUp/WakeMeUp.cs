@@ -1,36 +1,46 @@
 ﻿using RimWorld;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Verse;
+using Verse.AI;
 
-namespace WakeMeUp{
+namespace WakeMeUp
+{
 
-    class WakeMeUp : ThingComp
+    class WakeMeUp : ThinkNode
     {
-        public override void CompTick() {
-            Log.Error("Let's error on every tick!");
-        }
-        public WakeMeUpProperties Props => (WakeMeUpProperties)this.props;
-        public bool ExampleBool => Props.myExampleBool;
-    }
-    public class WakeMeUpProperties : CompProperties
-    {
-        public bool myExampleBool;
-        public float myExampleFloat;
-
-        /// <summary>
-        /// These constructors aren't strictly required if the compClass is set in the XML.
-        /// </summary>
-        public WakeMeUpProperties()
+        public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
-            this.compClass = typeof(WakeMeUp);
+            if (pawn == null || !pawn.IsColonist || pawn.IsPrisoner) return ThinkResult.NoJob;
+
+            Need_Rest needRest = pawn.needs.rest;
+            if (needRest == null && needRest.CurLevel > 0.1f) return ThinkResult.NoJob;
+
+            var drug = FindWakeUp(pawn);
+            if (drug == null) return ThinkResult.NoJob;
+
+            var job = new Job(JobDefOf.Ingest, drug)
+            {
+                count = 1
+            };
+
+            return new ThinkResult(job, this);
+
+            throw new NotImplementedException();
+
         }
 
-        public WakeMeUpProperties(Type compClass) : base(compClass)
+        public static Thing FindWakeUp(Pawn pawn)
         {
-            this.compClass = compClass;
+            var innerContainer = pawn.inventory.innerContainer;
+            foreach (var defThing in innerContainer)
+            {
+                if (defThing.def.defName == "WakeUp")
+                {
+                    return defThing;
+                }
+            }
+
+            return null;
         }
     }
 }
